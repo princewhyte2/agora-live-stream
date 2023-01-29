@@ -19,9 +19,9 @@ let roomId = urlParams.get("channel")
 let token = urlParams.get("token")
 // let roomId = "channel-78-1674849884"
 
-if (!roomId) {
-  roomId = "channel-78-1674849884"
-}
+// if (!roomId) {
+//   roomId = "channel-78-1674849884"
+// }
 
 let displayName = urlParams.get("name")
 // if (!displayName) {

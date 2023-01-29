@@ -58,6 +58,7 @@ let joinRoomInit = async () => {
     client.on("user-published", handleUserPublished)
     client.on("user-left", handleUserLeft)
   } catch (error) {
+    window.alert(error)
     console.log("joining error", error)
   }
 }

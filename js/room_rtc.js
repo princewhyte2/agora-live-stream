@@ -17,6 +17,9 @@ const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 let roomId = urlParams.get("channel")
 let token = urlParams.get("token")
+
+console.log("this is roomId", roomId)
+console.log("this is token", token)
 // let roomId = "channel-78-1674849884"
 
 // if (!roomId) {
@@ -67,26 +70,30 @@ let joinStream = async () => {
   document.getElementById("join-btn").style.display = "none"
   document.getElementsByClassName("stream__actions")[0].style.display = "flex"
 
-  localTracks = await AgoraRTC
-    .createMicrophoneAndCameraTracks
-    // {},
-    // {
-    //   encoderConfig: {
-    //     width: { min: 640, ideal: 1920, max: 1920 },
-    //     height: { min: 480, ideal: 1080, max: 1080 },
-    //   },
-    // },
-    ()
+  try {
+    localTracks = await AgoraRTC
+      .createMicrophoneAndCameraTracks
+      // {},
+      // {
+      //   encoderConfig: {
+      //     width: { min: 640, ideal: 1920, max: 1920 },
+      //     height: { min: 480, ideal: 1080, max: 1080 },
+      //   },
+      // },
+      ()
 
-  let player = `<div class="video__container" id="user-container-${uid}">
+    let player = `<div class="video__container" id="user-container-${uid}">
                     <div class="video-player" id="user-${uid}"></div>
                  </div>`
 
-  document.getElementById("streams__container").insertAdjacentHTML("beforeend", player)
-  document.getElementById(`user-container-${uid}`).addEventListener("click", expandVideoFrame)
+    document.getElementById("streams__container").insertAdjacentHTML("beforeend", player)
+    document.getElementById(`user-container-${uid}`).addEventListener("click", expandVideoFrame)
 
-  localTracks[1].play(`user-${uid}`)
-  await client.publish([localTracks[0], localTracks[1]])
+    localTracks[1].play(`user-${uid}`)
+    await client.publish([localTracks[0], localTracks[1]])
+  } catch (error) {
+    window.alert(error)
+  }
 }
 
 let switchToCamera = async () => {

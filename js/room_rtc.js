@@ -36,18 +36,18 @@ let sharingScreen = false
 
 let joinRoomInit = async () => {
   try {
-    rtmClient = await AgoraRTM.createInstance(APP_ID)
-    // await rtmClient.login({ uid, token })
+    // rtmClient = await AgoraRTM.createInstance(APP_ID)
+    // // await rtmClient.login({ uid, token })
 
-    await rtmClient.addOrUpdateLocalUserAttributes({ name: displayName })
+    // await rtmClient.addOrUpdateLocalUserAttributes({ name: displayName })
 
-    channel = await rtmClient.join({ channelName: roomId, token })
+    // // channel = await rtmClient.join({ channelName: roomId, token })
 
-    // await channel.join()
+    // // await channel.join()
 
-    channel.on("MemberJoined", handleMemberJoined)
-    channel.on("MemberLeft", handleMemberLeft)
-    channel.on("ChannelMessage", handleChannelMessage)
+    // channel.on("MemberJoined", handleMemberJoined)
+    // channel.on("MemberLeft", handleMemberLeft)
+    // channel.on("ChannelMessage", handleChannelMessage)
 
     getMembers()
     addBotMessageToDom(`Welcome to the room ${displayName}! 👋`)

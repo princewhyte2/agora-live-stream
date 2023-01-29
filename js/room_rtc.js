@@ -6,8 +6,8 @@ if (!uid) {
   sessionStorage.setItem("uid", uid)
 }
 
-let token =
-  "0069f2ac24faa694684b1d65a2a908b451fIACFSozUFnj6E3yXPJxhqxZyV2G5JKuqofiFRJXZ88t1KzPgCaQAAAAAIgC8awEA3H/VYwQAAQBsPNRjAwBsPNRjAgBsPNRjBABsPNRj"
+// let token =
+//   "0069f2ac24faa694684b1d65a2a908b451fIACFSozUFnj6E3yXPJxhqxZyV2G5JKuqofiFRJXZ88t1KzPgCaQAAAAAIgC8awEA3H/VYwQAAQBsPNRjAwBsPNRjAgBsPNRjBABsPNRj"
 let client
 
 let rtmClient
@@ -15,17 +15,18 @@ let channel
 
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
-// let roomId = urlParams.get("room")
-let roomId = "channel-78-1674849884"
+let roomId = urlParams.get("channel")
+let token = urlParams.get("token")
+// let roomId = "channel-78-1674849884"
 
 if (!roomId) {
   roomId = "channel-78-1674849884"
 }
 
-let displayName = sessionStorage.getItem("display_name")
-if (!displayName) {
-  window.location = "lobby.html"
-}
+let displayName = urlParams.get("name")
+// if (!displayName) {
+//   window.location = "lobby.html"
+// }
 
 let localTracks = []
 let remoteUsers = {}
@@ -34,41 +35,47 @@ let localScreenTracks
 let sharingScreen = false
 
 let joinRoomInit = async () => {
-  //   rtmClient = await AgoraRTM.createInstance(APP_ID)
-  //   await rtmClient.login({ uid, token })
+  try {
+    rtmClient = await AgoraRTM.createInstance(APP_ID)
+    await rtmClient.login({ uid, token })
 
-  //   await rtmClient.addOrUpdateLocalUserAttributes({ name: displayName })
+    await rtmClient.addOrUpdateLocalUserAttributes({ name: displayName })
 
-  //   channel = await rtmClient.createChannel(roomId)
-  //   await channel.join()
+    channel = await rtmClient.createChannel(roomId)
 
-  //   channel.on("MemberJoined", handleMemberJoined)
-  //   channel.on("MemberLeft", handleMemberLeft)
-  //   channel.on("ChannelMessage", handleChannelMessage)
+    await channel.join()
 
-  //   getMembers()
-  addBotMessageToDom(`Welcome to the room ${displayName}! 👋`)
+    channel.on("MemberJoined", handleMemberJoined)
+    channel.on("MemberLeft", handleMemberLeft)
+    channel.on("ChannelMessage", handleChannelMessage)
 
-  client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" })
-  await client.join(APP_ID, roomId, token, uid)
+    getMembers()
+    addBotMessageToDom(`Welcome to the room ${displayName}! 👋`)
 
-  client.on("user-published", handleUserPublished)
-  client.on("user-left", handleUserLeft)
+    client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" })
+    await client.join(APP_ID, roomId, token, uid)
+
+    client.on("user-published", handleUserPublished)
+    client.on("user-left", handleUserLeft)
+  } catch (error) {
+    console.log("joining error", error)
+  }
 }
 
 let joinStream = async () => {
   document.getElementById("join-btn").style.display = "none"
   document.getElementsByClassName("stream__actions")[0].style.display = "flex"
 
-  localTracks = await AgoraRTC.createMicrophoneAndCameraTracks(
-    {},
-    {
-      encoderConfig: {
-        width: { min: 640, ideal: 1920, max: 1920 },
-        height: { min: 480, ideal: 1080, max: 1080 },
-      },
-    },
-  )
+  localTracks = await AgoraRTC
+    .createMicrophoneAndCameraTracks
+    // {},
+    // {
+    //   encoderConfig: {
+    //     width: { min: 640, ideal: 1920, max: 1920 },
+    //     height: { min: 480, ideal: 1080, max: 1080 },
+    //   },
+    // },
+    ()
 
   let player = `<div class="video__container" id="user-container-${uid}">
                     <div class="video-player" id="user-${uid}"></div>
